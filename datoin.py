@@ -53,7 +53,7 @@ with sync_playwright() as p:
                     print('Element is not present on the page or did not appear within the timeout.')
         except Exception as e:
             print('Element is not present on the page or did not appear within the timeout.')
-        directory_path = "/Users/deekshitha/PycharmProjects/PlaywrightProject/data"
+        directory_path = " " #Enter the directory path
         for filename in os.listdir(directory_path):
             file_path = os.path.join(directory_path, filename)
             upload = "//p[normalize-space()='Upload Dataset']"
