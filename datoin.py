@@ -89,7 +89,7 @@ with sync_playwright() as p:
                 print(filename+" uploaded successfully!")
             except Exception as e:
                 print(filename+" is not uploaded!")
-    #create_dataset(page)
+    create_dataset(page)
 
     #used to delete a column from the dataset
     def delete_col(page):
@@ -130,7 +130,7 @@ with sync_playwright() as p:
             print("Column successfully deleted!")
         else:
             print("Column not deleted!")
-    #delete_col(page)
+    delete_col(page)
 
     #used to start a new application and run a dataset with a given target to get appropriate results
     def create_new_application(page):
@@ -210,7 +210,7 @@ with sync_playwright() as p:
             page.wait_for_selector(evalu,timeout=240000)
         except Exception as e:
             print("Report making is not possible!")
-    #create_new_application(page)
+    create_new_application(page)
 
     # used to delete a row while applying a particular parameter
     def delete_row(page): # to delete row having ID less than 5
@@ -240,25 +240,25 @@ with sync_playwright() as p:
         apply = "//button[@id='apply']"
         apl = page.click(apply)
         print("Delete row less than 5 peration is done!")
-    #delete_row(page)
+    delete_row(page)
 
     #to add an extra column to a given dataset with appropriate column name
     def add_column(page):
-        # da = "//div[contains(text(),'Datasets')]"
-        # page.click(da)
-        # irs = "//div[@title='isr']"
-        # show = page.click(irs)
-        # prep = "//button[normalize-space()='Prepare']"
-        # try:
-        #     ex = page.wait_for_selector(prep, timeout=240000)
-        # except Exception as e:
-        #     print("Not seen!")
-        # pre = page.click(prep)
-        # chk = "//span[normalize-space()='Prepare']"
-        # try:
-        #     ce = page.wait_for_selector(chk,timeout=24000)
-        # except Exception as e:
-        #     print("Not found!")
+        da = "//div[contains(text(),'Datasets')]"
+        page.click(da)
+        irs = "//div[@title='isr']"
+        show = page.click(irs)
+        prep = "//button[normalize-space()='Prepare']"
+        try:
+            ex = page.wait_for_selector(prep, timeout=240000)
+        except Exception as e:
+            print("Not seen!")
+        pre = page.click(prep)
+        chk = "//span[normalize-space()='Prepare']"
+        try:
+            ce = page.wait_for_selector(chk,timeout=24000)
+        except Exception as e:
+            print("Not found!")
         add_col = "//button[@title='Add Column']//img[@class='cayley-aciton-Icons']"
         page.click(add_col)
         add_new = "//form//div//select[@name='columnCreateFunction']"
@@ -274,7 +274,7 @@ with sync_playwright() as p:
             print("Not visible!")
         ap = page.click(apr)
         print("Column added!")
-    #add_column(page)
+    add_column(page)
 
     #to reorder a dataset according to a given column name
     def sort_column(page):
@@ -318,7 +318,7 @@ with sync_playwright() as p:
             print("Not found!")
         confir = page.click(conf)
         print("Petal length is sorted in decending order!")
-    #sort_column(page)
+    sort_column(page)
 
     def common_dataset(page):
         da = "//div[contains(text(),'Datasets')]"
@@ -349,7 +349,6 @@ with sync_playwright() as p:
             print("Not found!")
         confir = page.click(conf)
         print("Done!")
-        # att = page.wait_for_selector(s,timeout=240000)
 
     def change_case(page):
         common_dataset(page)
@@ -372,7 +371,7 @@ with sync_playwright() as p:
         tt = page.locator(casetype)
         tt.select_option('toUpperCase',timeout=240000)
         done(page)
-    #change_case(page)
+    change_case(page)
 
 
     def missing_value_treatment(page):
@@ -403,7 +402,7 @@ with sync_playwright() as p:
         tt = page.locator(casetype)
         tt.fill('missing_value',timeout=240000)
         done(page)
-    #missing_value_treatment(page)
+    missing_value_treatment(page)
 
 
     def number_scaling(page):
@@ -427,7 +426,7 @@ with sync_playwright() as p:
         tt = page.locator(casetype)
         tt.select_option('Standard',timeout=240000)
         done(page)
-    #number_scaling(page)
+    number_scaling(page)
 
 
     def outlier_treatment(page):
@@ -451,7 +450,7 @@ with sync_playwright() as p:
         tt = page.locator(casetype)
         tt.select_option('AVERAGE',timeout=240000)
         done(page)
-    #outlier_treatment(page)
+    outlier_treatment(page)
 
     def rename_column(page):
         common_dataset(page)
@@ -474,7 +473,7 @@ with sync_playwright() as p:
         tt = page.locator(casetype)
         tt.fill('marks',timeout=240000)
         done(page)
-    #rename_column(page)
+    rename_column(page)
 
     def round_n(page):
         common_dataset(page)
@@ -496,7 +495,7 @@ with sync_playwright() as p:
         tt = page.locator(casetY)
         tt.fill('2',timeout=240000)
         done(page)
-    #round_n(page)
+    round_n(page)
 
     def string_replace(page):
         common_dataset(page)
@@ -521,7 +520,7 @@ with sync_playwright() as p:
         tti = page.locator(cas)
         tti.fill('replaced',timeout=240000)
         done(page)
-    #string_replace(page)
+    string_replace(page)
 
     def done_row(page):
         apply = "//button[@id='apply']"
@@ -543,7 +542,7 @@ with sync_playwright() as p:
         # val = "//form//div//input[@name='value']"
         # page.locator(val).fill('5')
         done_row(page)
-    #row_drop_outliers(page)
+    row_drop_outliers(page)
 
     def row_drop_isBetween(page):
         row_start(page)
@@ -558,15 +557,219 @@ with sync_playwright() as p:
         done_row(page)
     row_drop_isBetween(page)
 
-    def row_drop_isBetween(page):
+def row_drop_isequalto(page):
         row_start(page)
         inpf = "//form//div//select[@name='column']"
         page.locator(inpf).select_option('score')
         condt = "//form//div//select[@name='condition']"
-        page.locator(condt).select_option('IsBetween')
-        minval = "//form//div//input[@name='minValue']"
-        page.locator(minval).fill('5')
-        maxval = "//form//div//input[@name='maxValue']"
-        page.locator(maxval).fill('30')
+        page.locator(condt).select_option('IsEqualTo')
+        val = "//form//div//input[@name='value']"
+        page.locator(val).fill('35')
         done_row(page)
-    row_drop_isBetween(page)
+    row_drop_isequalto(page)
+
+    def row_drop_isgreaterthan(page):
+        row_start(page)
+        inpf = "//form//div//select[@name='column']"
+        page.locator(inpf).select_option('score')
+        condt = "//form//div//select[@name='condition']"
+        page.locator(condt).select_option('IsGreaterThan')
+        val = "//form//div//input[@name='value']"
+        page.locator(val).fill('25')
+        done_row(page)
+    row_drop_isgreaterthan(page)
+
+    def row_drop_isgreaterthanorequalto(page):
+        row_start(page)
+        inpf = "//form//div//select[@name='column']"
+        page.locator(inpf).select_option('score')
+        condt = "//form//div//select[@name='condition']"
+        page.locator(condt).select_option('IsGreaterThanOrEqualTo')
+        val = "//form//div//input[@name='value']"
+        page.locator(val).fill('25')
+        done_row(page)
+    row_drop_isgreaterthanorequalto(page)
+
+    def row_drop_islessthanorequalto(page):
+        row_start(page)
+        inpf = "//form//div//select[@name='column']"
+        page.locator(inpf).select_option('score')
+        condt = "//form//div//select[@name='condition']"
+        page.locator(condt).select_option('IsLessThanOrEqualTo')
+        val = "//form//div//input[@name='value']"
+        page.locator(val).fill('25')
+        done_row(page)
+    row_drop_islessthanorequalto(page)
+
+    def row_drop_isnotequalto(page):
+        row_start(page)
+        inpf = "//form//div//select[@name='column']"
+        page.locator(inpf).select_option('score')
+        condt = "//form//div//select[@name='condition']"
+        page.locator(condt).select_option('IsNotEqualTo')
+        val = "//form//div//input[@name='value']"
+        page.locator(val).fill('35')
+        done_row(page)
+    row_drop_isnotequalto(page)
+
+    def row_drop_if_contains(page):
+        row_start(page)
+        inpf = "//form//div//select[@name='column']"
+        page.locator(inpf).select_option('name')
+        condt = "//form//div//select[@name='condition']"
+        page.locator(condt).select_option('Contains')
+        val = "//input[@name='subString']"
+        page.locator(val).fill('Illuminex Limited8')
+        done_row(page)
+    row_drop_if_contains(page)
+
+    def row_drop_if_endswith(page):
+        row_start(page)
+        inpf = "//form//div//select[@name='column']"
+        page.locator(inpf).select_option('name')
+        condt = "//form//div//select[@name='condition']"
+        page.locator(condt).select_option('EndsWith')
+        val = "//input[@name='subString']"
+        page.locator(val).fill('8')
+        done_row(page)
+    row_drop_if_endswith(page)
+
+    def row_drop_if_isempty(page):
+        row_start(page)
+        inpf = "//form//div//select[@name='column']"
+        page.locator(inpf).select_option('name')
+        condt = "//form//div//select[@name='condition']"
+        page.locator(condt).select_option('IsEmpty')
+        done_row(page)
+    row_drop_if_isempty(page)
+
+    def row_drop_if_istextequalto(page):
+        row_start(page)
+        inpf = "//form//div//select[@name='column']"
+        page.locator(inpf).select_option('name')
+        condt = "//form//div//select[@name='condition']"
+        page.locator(condt).select_option('IsTextEqualTo')
+        val = "//input[@name='subString']"
+        page.locator(val).fill('Illuminex Limited8')
+        done_row(page)
+    row_drop_if_istextequalto(page)
+
+    def row_drop_if_istextnotequalto(page):
+        row_start(page)
+        inpf = "//form//div//select[@name='column']"
+        page.locator(inpf).select_option('name')
+        condt = "//form//div//select[@name='condition']"
+        page.locator(condt).select_option('IsTextNotEqualTo')
+        val = "//input[@name='subString']"
+        page.locator(val).fill('Illuminex Limited8')
+        done_row(page)
+    row_drop_if_istextnotequalto(page)
+
+    def row_drop_if_startswith(page):
+        row_start(page)
+        inpf = "//form//div//select[@name='column']"
+        page.locator(inpf).select_option('name')
+        condt = "//form//div//select[@name='condition']"
+        page.locator(condt).select_option('StartsWith')
+        val = "//input[@name='subString']"
+        page.locator(val).fill('i')
+        done_row(page)
+    row_drop_if_startswith(page)
+
+    def row_drop_if_istextequalto(page):
+        row_start(page)
+        inpf = "//form//div//select[@name='column']"
+        page.locator(inpf).select_option('name')
+        condt = "//form//div//select[@name='condition']"
+        page.locator(condt).select_option('IsTextEqualTo')
+        val = "//input[@name='subString']"
+        page.locator(val).fill('Illuminex Limited8')
+        done_row(page)
+    row_drop_if_istextequalto(page)
+
+    def row_drop_isdatebetween(page):
+        row_start(page)
+        inpf = "//form//div//select[@name='column']"
+        page.locator(inpf).select_option('isoFormaWrong')
+        condt = "//form//div//select[@name='condition']"
+        page.locator(condt).select_option('IsDateBetween')
+        startval = "//input[@name='startDate']"
+        page.locator(startval).fill('2000-10-31 01:30:00.000000000')
+        page.keyboard.press('Enter')
+        endval = "//input[@name='endDate']"
+        page.locator(endval).fill('2000-11-01 01:30:00.000000000')
+        page.keyboard.press('Enter')
+        done_row(page)
+    row_drop_isdatebetween(page)
+
+    def row_drop_isdateequalto(page):
+        row_start(page)
+        inpf = "//form//div//select[@name='column']"
+        page.locator(inpf).select_option('isoFormaWrong')
+        condt = "//form//div//select[@name='condition']"
+        page.locator(condt).select_option('IsDateEqualTo')
+        val = "//input[@name='customDate']"
+        page.locator(val).fill('2000-10-31 01:30:00.000000000')
+        page.keyboard.press('Enter')
+        done_row(page)
+    row_drop_isdateequalto(page)
+
+    def row_drop_isdategreaterthan(page):
+        row_start(page)
+        inpf = "//form//div//select[@name='column']"
+        page.locator(inpf).select_option('isoFormaWrong')
+        condt = "//form//div//select[@name='condition']"
+        page.locator(condt).select_option('IsDateGreaterThan')
+        val = "//input[@name='customDate']"
+        page.locator(val).fill('2000-10-31 01:30:00.000000000')
+        page.keyboard.press('Enter')
+        done_row(page)
+    row_drop_isdategreaterthan(page)
+
+    def row_drop_isdategreaterthanorequalto(page):
+        row_start(page)
+        inpf = "//form//div//select[@name='column']"
+        page.locator(inpf).select_option('isoFormaWrong')
+        condt = "//form//div//select[@name='condition']"
+        page.locator(condt).select_option('IsDateGreaterThanOrEqualTo')
+        val = "//input[@name='customDate']"
+        page.locator(val).fill('2000-10-31 01:30:00.000000000')
+        page.keyboard.press('Enter')
+        done_row(page)
+    row_drop_isgreaterthanorequalto(page)
+
+    def row_drop_isdatelessthan(page):
+        row_start(page)
+        inpf = "//form//div//select[@name='column']"
+        page.locator(inpf).select_option('isoFormaWrong')
+        condt = "//form//div//select[@name='condition']"
+        page.locator(condt).select_option('IsDateLessThan')
+        val = "//input[@name='customDate']"
+        page.locator(val).fill('2000-10-31 01:30:00.000000000')
+        page.keyboard.press('Enter')
+        done_row(page)
+    row_drop_isdatelessthan(page)
+
+    def row_drop_isdatelessthanorequalto(page):
+        row_start(page)
+        inpf = "//form//div//select[@name='column']"
+        page.locator(inpf).select_option('isoFormaWrong')
+        condt = "//form//div//select[@name='condition']"
+        page.locator(condt).select_option('IsDateLessThanOrEqualTo')
+        val = "//input[@name='customDate']"
+        page.locator(val).fill('2000-10-31 01:30:00.000000000')
+        page.keyboard.press('Enter')
+        done_row(page)
+    row_drop_isdatelessthanorequalto(page)
+
+    def row_drop_isdatenotequalto(page):
+        row_start(page)
+        inpf = "//form//div//select[@name='column']"
+        page.locator(inpf).select_option('isoFormaWrong')
+        condt = "//form//div//select[@name='condition']"
+        page.locator(condt).select_option('IsDateNotEqualTo')
+        val = "//input[@name='customDate']"
+        page.locator(val).fill('2000-10-31 01:30:00.000000000')
+        page.keyboard.press('Enter')
+        done_row(page)
+    row_drop_isdatenotequalto(page)
