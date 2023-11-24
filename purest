@@ -13,7 +13,6 @@ try:
 except Exception as e:
     print(f"Error occurred during logging setup: {e}")
 PATHL=os.getcwd()+"/"
-
 def g_config():
     with open(PATHL+"config.toml", mode="rb") as fp:
         config_file = tomli.load(fp)
@@ -24,7 +23,6 @@ def g_config():
 def signed_in_context():
     with sync_playwright() as playwright:
         conf = g_config()
-        print('------------------------')
         print(conf)
         url = conf['base']['url']
         print(f'Navigated to {url}',url)
@@ -69,7 +67,7 @@ def signed_in_context():
         context.tracing.stop(path="trace.zip")
         context.close()
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_org_up(signed_in_context):
     page = signed_in_context
     with open(PATHL+"config.toml", mode="rb") as fp:
@@ -101,7 +99,7 @@ def test_org_up(signed_in_context):
     # expect(page).to_have_url(re.compile(".*orgInstance"))
     # page.close()
 
-@pytest.mark.skip
+#@pytest.mark.skip
 def test_delete_col(signed_in_context):
     conf = g_config()
     page = signed_in_context
@@ -110,11 +108,11 @@ def test_delete_col(signed_in_context):
         dp = page.wait_for_selector(dop,timeout=240000)
     except Exception as e:
         print("Icon not found!")
-    du = page.click(dop)
+    page.click(dop)
     page.screenshot(path=PATHL+date_string+"delete_col1.jpg")
     ssel = "//span[@class='multiselect-selected-text']"
-    sel = page.click(ssel)
-    id = "//label[normalize-space()='"+conf['data']['name']+"']"
+    page.click(ssel)
+    id = "//label[normalize-space()='"+conf['data']['del_column_name1']+"']"
     try:
         ser = page.wait_for_selector(id,timeout=240000)
     except Exception as e:
@@ -122,15 +120,16 @@ def test_delete_col(signed_in_context):
     ia = page.click(id)
     ap = "//button[@id='apply']"
     app = page.click(ap)
-    col = "//div[@id='"+conf['data']['name']+"_col_icon']"
+    col = "//div[@id='"+conf['data']['del_column_name1']+"_col_icon']"
     ad = page.locator(col).count()
     if ad!=0:
         print("Column successfully deleted!")
     else:
         print("Column not deleted!")
     page.screenshot(path=PATHL+date_string+"delete_col2.jpg")
+    utilities.revert(page)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_sort_data(signed_in_context):
     conf = g_config()
     page = signed_in_context
@@ -141,7 +140,7 @@ def test_sort_data(signed_in_context):
     page.screenshot(path=PATHL+date_string+"sort_data1.jpg")
     sor = "//form/div[1]/div/div[1]/div/span/div/button/span[@class='multiselect-selected-text']"
     page.click(sor)
-    dot = "//label[normalize-space()='"+conf['data']['score']+"']"
+    dot = "//label[normalize-space()='"+conf['data']['column_name3']+"']"
     try:
         page.wait_for_selector(dot,timeout=240000)
     except Exception as e:
@@ -154,8 +153,9 @@ def test_sort_data(signed_in_context):
     utilities.add(page)
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"sort_data2.jpg")
+    utilities.revert(page)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_change_case(signed_in_context):
     conf = g_config()
     page = signed_in_context
@@ -170,7 +170,7 @@ def test_change_case(signed_in_context):
     except Exception as e:
          print("Not seen!")
     et = page.locator(colu)
-    et.select_option(conf['data']['name'],timeout=240000)
+    et.select_option(conf['data']['column_name2'],timeout=240000)
     casetype ="//select[@name='caseType']"
     try:
         ex = page.wait_for_selector(casetype, timeout=240000)
@@ -181,9 +181,10 @@ def test_change_case(signed_in_context):
     utilities.add(page)
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"changecase2.jpg")
+    utilities.revert(page)
 # test_change_case(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_missing_value_treatment(signed_in_context):
     conf = g_config()
     page = signed_in_context
@@ -198,7 +199,7 @@ def test_missing_value_treatment(signed_in_context):
     except Exception as e:
         print("Not seen!")
     et = page.locator(colu)
-    et.select_option(conf['data']['name'],timeout=240000)
+    et.select_option(conf['data']['column_name2'],timeout=240000)
     casetype ="//select[@name='treatmentType']"
     try:
         ex = page.wait_for_selector(casetype, timeout=240000)
@@ -217,8 +218,9 @@ def test_missing_value_treatment(signed_in_context):
     utilities.add(page)
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"missing_value_treatment2.jpg")
+    utilities.revert(page)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_number_scaling(signed_in_context):
     conf = g_config()
     page = signed_in_context
@@ -233,7 +235,7 @@ def test_number_scaling(signed_in_context):
     except Exception as e:
         print("Not seen!")
     et = page.locator(colu)
-    et.select_option(conf['data']['score'],timeout=240000)
+    et.select_option(conf['data']['column_name3'],timeout=240000)
     casetype ="//select[@name='scaleType']"
     try:
         ex = page.wait_for_selector(casetype, timeout=240000)
@@ -244,8 +246,9 @@ def test_number_scaling(signed_in_context):
     utilities.add(page)
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"numberscaling2.jpg")
+    utilities.revert(page)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_outlier_treatment(signed_in_context):
     conf = g_config()
     page = signed_in_context
@@ -260,7 +263,7 @@ def test_outlier_treatment(signed_in_context):
     except Exception as e:
         print("Not seen!")
     et = page.locator(colu)
-    et.select_option(conf['data']['score'],timeout=240000)
+    et.select_option(conf['data']['column_name3'],timeout=240000)
     casetype ="//select[@name='treatmentType']"
     try:
         ex = page.wait_for_selector(casetype, timeout=240000)
@@ -271,8 +274,9 @@ def test_outlier_treatment(signed_in_context):
     utilities.add(page)
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"outliertreatment2.jpg")
+    utilities.revert(page)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_rename_column(signed_in_context):
     conf = g_config()
     page = signed_in_context
@@ -287,21 +291,22 @@ def test_rename_column(signed_in_context):
     except Exception as e:
         print("Not seen!")
     et = page.locator(colu)
-    et.select_option(conf['data']['score'],timeout=240000)
+    et.select_option(conf['data']['del_column_name1'],timeout=240000)
     casetype ="//input[@name='newColumn']"
     try:
         ex = page.wait_for_selector(casetype, timeout=240000)
     except Exception as e:
         print("Not seen!")
     tt = page.locator(casetype)
-    tt.fill(conf['data']['marks'],timeout=240000)
+    tt.fill(conf['data']['renamed_col_name'],timeout=240000)
     page.keyboard.press('Enter')
     utilities.add(page)
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"renamecolumn2.jpg")
+    utilities.revert(page)
 # test_rename_column(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_round_n(signed_in_context):
     conf = g_config()
     page = signed_in_context
@@ -316,19 +321,20 @@ def test_round_n(signed_in_context):
     except Exception as e:
         print("Not seen!")
     et = page.locator(colu)
-    et.select_option(conf['data']['score'],timeout=240000)
+    et.select_option(conf['data']['column_name3'],timeout=240000)
     casetype ="//select[@name='roundFunctionType']"
     tt = page.locator(casetype)
     tt.select_option('ROUND',timeout=240000)
     casetY ="//input[@name='N']"
     tt = page.locator(casetY)
-    tt.fill(conf['data']['value6'],timeout=240000)
+    tt.fill(conf['data']['round_n'],timeout=240000)
     utilities.add(page)
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"round2.jpg")
+    utilities.revert(page)
 # test_round_n(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_string_replace(signed_in_context):
     conf = g_config()
     page = signed_in_context
@@ -343,7 +349,7 @@ def test_string_replace(signed_in_context):
     except Exception as e:
         print("Not seen!")
     et = page.locator(colu)
-    et.select_option(conf['data']['name'],timeout=240000)
+    et.select_option(conf['data']['column_name2'],timeout=240000)
     casetype ="//select[@name='replaceType']"
     tt = page.locator(casetype)
     tt.select_option('Text',timeout=240000)
@@ -357,6 +363,7 @@ def test_string_replace(signed_in_context):
     utilities.add(page)
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"stringreplace2.jpg")
+    utilities.revert(page)
 # test_string_replace(signed_in_context)
 
 # def test_done_row(signed_in_context):
@@ -370,128 +377,133 @@ def test_string_replace(signed_in_context):
 #     drop_row = "//button[@title='Drop Row']//img[@class='cayley-aciton-Icons']"
 #     dpr = page.click(drop_row)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_row_drop_outliers(signed_in_context):
     conf = g_config()
     page = signed_in_context
     utilities.row_start(page)
     inpf = "//form//div//select[@name='column']"
-    page.locator(inpf).select_option(conf['data']['score'])
+    page.locator(inpf).select_option(conf['data']['column_name3'])
     condt = "//form//div//select[@name='condition']"
     page.locator(condt).select_option('DropOutliers')
     page.screenshot(path=PATHL+date_string+"r_d_outliers.jpg")
-    # val = "//form//div//input[@name='value']"
-    # page.locator(val).fill(conf['data']['value1'])
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"r_d_outliers2.jpg")
+    utilities.revert(page)
 # test_row_drop_outliers(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_row_drop_isBetween(signed_in_context):
     conf = g_config()
     page = signed_in_context
     utilities.row_start(page)
     inpf = "//form//div//select[@name='column']"
-    page.locator(inpf).select_option(conf['data']['score'])
+    page.locator(inpf).select_option(conf['data']['column_name3'])
     condt = "//form//div//select[@name='condition']"
     page.locator(condt).select_option('IsBetween')
     page.screenshot(path=PATHL+date_string+"r_d_isbetween.jpg")
     minval = "//form//div//input[@name='minValue']"
-    page.locator(minval).fill(conf['data']['value1'])
+    page.locator(minval).fill(conf['data']['row_drop_isbetween1'])
     maxval = "//form//div//input[@name='maxValue']"
-    page.locator(maxval).fill(conf['data']['value2'])
-    page.keyboard.press("Enter")
+    page.locator(maxval).fill(conf['data']['row_drop_isbetween2'])
+    # page.keyboard.press("Enter")
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"r_d_isbetween2.jpg")
+    utilities.revert(page)
 # test_row_drop_isBetween(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_row_drop_isequalto(signed_in_context):
     conf = g_config()
     page = signed_in_context
     utilities.row_start(page)
     inpf = "//form//div//select[@name='column']"
-    page.locator(inpf).select_option(conf['data']['score'])
+    page.locator(inpf).select_option(conf['data']['column_name3'])
     condt = "//form//div//select[@name='condition']"
     page.locator(condt).select_option('IsEqualTo')
     page.screenshot(path=PATHL+date_string+"r_d_isequalto.jpg")
     val = "//form//div//input[@name='value']"
-    page.locator(val).fill(conf['data']['value3'])
+    page.locator(val).fill(conf['data']['row_drop_isequalto'])
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"r_d_isequalto2.jpg")
+    utilities.revert(page)
 # test_row_drop_isequalto(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_row_drop_isgreaterthan(signed_in_context):
     conf = g_config()
     page = signed_in_context
     utilities.row_start(page)
     inpf = "//form//div//select[@name='column']"
-    page.locator(inpf).select_option(conf['data']['score'])
+    page.locator(inpf).select_option(conf['data']['column_name3'])
     condt = "//form//div//select[@name='condition']"
     page.locator(condt).select_option('IsGreaterThan')
     page.screenshot(path=PATHL+date_string+"r_d_isgreaterthan.jpg")
     val = "//form//div//input[@name='value']"
-    page.locator(val).fill(conf['data']['value4'])
+    page.locator(val).fill(conf['data']['row_drop_isgreaterthan'])
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"r_d_isgreaterthan2.jpg")
+    utilities.revert(page)
 # test_row_drop_isgreaterthan(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_row_drop_isgreaterthanorequalto(signed_in_context):
     conf = g_config()
     page = signed_in_context
     utilities.row_start(page)
     inpf = "//form//div//select[@name='column']"
-    page.locator(inpf).select_option(conf['data']['score'])
+    page.locator(inpf).select_option(conf['data']['column_name3'])
     condt = "//form//div//select[@name='condition']"
     page.locator(condt).select_option('IsGreaterThanOrEqualTo')
     page.screenshot(path=PATHL+date_string+"r_d_isgreaterthanequalto.jpg")
     val = "//form//div//input[@name='value']"
-    page.locator(val).fill(conf['data']['value4'])
+    page.locator(val).fill(conf['data']['row_drop_isgreaterthan'])
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"r_d_isgreaterthanequalto2.jpg")
+    utilities.revert(page)
 # test_row_drop_isgreaterthanorequalto(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_row_drop_islessthanorequalto(signed_in_context):
     conf = g_config()
     page = signed_in_context
     utilities.row_start(page)
     inpf = "//form//div//select[@name='column']"
-    page.locator(inpf).select_option(conf['data']['score'])
+    page.locator(inpf).select_option(conf['data']['column_name3'])
     condt = "//form//div//select[@name='condition']"
     page.locator(condt).select_option('IsLessThanOrEqualTo')
     page.screenshot(path=PATHL+date_string+"r_d_islessthanequalto.jpg")
     val = "//form//div//input[@name='value']"
-    page.locator(val).fill(conf['data']['value4'])
+    page.locator(val).fill(conf['data']['islessthanorequalto'])
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"r_d_islessthanequalto2.jpg")
+    utilities.revert(page)
 # test_row_drop_islessthanorequalto(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_row_drop_isnotequalto(signed_in_context):
     conf = g_config()
     page = signed_in_context
     utilities.row_start(page)
     inpf = "//form//div//select[@name='column']"
-    page.locator(inpf).select_option(conf['data']['score'])
+    page.locator(inpf).select_option(conf['data']['column_name3'])
     condt = "//form//div//select[@name='condition']"
     page.locator(condt).select_option('IsNotEqualTo')
     page.screenshot(path=PATHL+date_string+"r_d_isnotequalto.jpg")
     val = "//form//div//input[@name='value']"
-    page.locator(val).fill(conf['data']['value3'])
+    page.locator(val).fill(conf['data']['row_drop_isnotequalto'])
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"r_d_isnotequalto2.jpg")
+    utilities.revert(page)
 # test_row_drop_isnotequalto(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_row_drop_if_contains(signed_in_context):
     conf = g_config()
     page = signed_in_context
     utilities.row_start(page)
     inpf = "//form//div//select[@name='column']"
-    page.locator(inpf).select_option(conf['data']['name'])
+    page.locator(inpf).select_option(conf['data']['column_name2'])
     condt = "//form//div//select[@name='condition']"
     page.locator(condt).select_option('Contains')
     page.screenshot(path=PATHL+date_string+"r_d_ifcontains.jpg")
@@ -500,46 +512,49 @@ def test_row_drop_if_contains(signed_in_context):
     page.keyboard.press("Enter")
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"r_d_ifcontains2.jpg")
+    utilities.revert(page)
 # test_row_drop_if_contains(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_row_drop_if_endswith(signed_in_context):
     conf = g_config()
     page = signed_in_context
     utilities.row_start(page)
     inpf = "//form//div//select[@name='column']"
-    page.locator(inpf).select_option(conf['data']['name'])
+    page.locator(inpf).select_option(conf['data']['column_name2'])
     condt = "//form//div//select[@name='condition']"
     page.locator(condt).select_option('EndsWith')
     page.screenshot(path=PATHL+date_string+"r_d_ifendswith.jpg")
     val = "//input[@name='subString']"
-    page.locator(val).fill(conf['data']['endswith'])
+    page.locator(val).fill(conf['data']['row_drop_endswith'])
     page.keyboard.press('Enter')
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"r_d_ifendswith2.jpg")
+    utilities.revert(page)
 # test_row_drop_if_endswith(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_row_drop_if_isempty(signed_in_context):
     conf = g_config()
     page = signed_in_context
     utilities.row_start(page)
     inpf = "//form//div//select[@name='column']"
-    page.locator(inpf).select_option(conf['data']['name'])
+    page.locator(inpf).select_option(conf['data']['column_name2'])
     page.screenshot(path=PATHL+date_string+"r_d_isempty.jpg")
     condt = "//form//div//select[@name='condition']"
     page.locator(condt).select_option('IsEmpty')
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"r_d_isempty2.jpg")
+    utilities.revert(page)
 # test_row_drop_if_isempty(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_row_drop_if_istextequalto(signed_in_context):
     conf = g_config()
     page = signed_in_context
     utilities.row_start(page)
     inpf = "//form//div//select[@name='column']"
-    page.locator(inpf).select_option(conf['data']['name'])
+    page.locator(inpf).select_option(conf['data']['column_name2'])
     condt = "//form//div//select[@name='condition']"
     page.locator(condt).select_option('IsTextEqualTo')
     page.screenshot(path=PATHL+date_string+"r_d_istextequalto.jpg")
@@ -548,15 +563,16 @@ def test_row_drop_if_istextequalto(signed_in_context):
     page.keyboard.press('Enter')
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"r_d_istextequalto2.jpg")
+    utilities.revert(page)
 # test_row_drop_if_istextequalto(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_row_drop_if_istextnotequalto(signed_in_context):
     conf = g_config()
     page = signed_in_context
     utilities.row_start(page)
     inpf = "//form//div//select[@name='column']"
-    page.locator(inpf).select_option(conf['data']['name'])
+    page.locator(inpf).select_option(conf['data']['column_name2'])
     condt = "//form//div//select[@name='condition']"
     page.locator(condt).select_option('IsTextNotEqualTo')
     page.screenshot(path=PATHL+date_string+"r_d_istextnotequalto.jpg")
@@ -565,177 +581,188 @@ def test_row_drop_if_istextnotequalto(signed_in_context):
     page.keyboard.press('Enter')
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"r_d_istextnotequalto2.jpg")
+    utilities.revert(page)
 # test_row_drop_if_istextnotequalto(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_row_drop_if_startswith(signed_in_context):
     conf = g_config()
     page = signed_in_context
     utilities.row_start(page)
     inpf = "//form//div//select[@name='column']"
-    page.locator(inpf).select_option(conf['data']['name'])
+    page.locator(inpf).select_option(conf['data']['column_name2'])
     condt = "//form//div//select[@name='condition']"
     page.locator(condt).select_option('StartsWith')
     page.screenshot(path=PATHL+date_string+"r_d_ifstartswith.jpg")
     val = "//input[@name='subString']"
-    page.locator(val).fill(conf['data']['substring'])
+    page.locator(val).fill(conf['data']['row_drop_if_startswith'])
     page.keyboard.press("Enter")
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"r_d_ifstartswith2.jpg")
+    utilities.revert(page)
 # test_row_drop_if_startswith(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_row_drop_isdatebetween(signed_in_context):
     conf = g_config()
     page = signed_in_context
     utilities.row_start(page)
     inpf = "//form//div//select[@name='column']"
-    page.locator(inpf).select_option(conf['data']['inputdate'])
+    page.locator(inpf).select_option(conf['data']['row_drop_date'])
     condt = "//form//div//select[@name='condition']"
     page.locator(condt).select_option('IsDateBetween')
     page.screenshot(path=PATHL+date_string+"r_d_isdatebetween.jpg")
     startval = "//input[@name='startDate']"
-    page.locator(startval).fill(conf['data']['date1'])
+    page.locator(startval).fill(conf['data']['row_drop_isdatebetween1'])
     page.keyboard.press('Enter')
     endval = "//input[@name='endDate']"
-    page.locator(endval).fill(conf['data']['date2'])
+    page.locator(endval).fill(conf['data']['row_drop_isdatebetween2'])
     page.keyboard.press('Enter')
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"r_d_isdatebetween2.jpg")
+    utilities.revert(page)
 # test_row_drop_isdatebetween(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_row_drop_isdateequalto(signed_in_context):
     conf = g_config()
     page = signed_in_context
     utilities.row_start(page)
     inpf = "//form//div//select[@name='column']"
-    page.locator(inpf).select_option(conf['data']['inputdate'])
+    page.locator(inpf).select_option(conf['data']['row_drop_date'])
     condt = "//form//div//select[@name='condition']"
     page.locator(condt).select_option('IsDateEqualTo')
     page.screenshot(path=PATHL+date_string+"r_d_isdateequalto.jpg")
     val = "//input[@name='customDate']"
-    page.locator(val).fill(conf['data']['date1'])
+    page.locator(val).fill(conf['data']['row_drop_isdateequalto'])
     page.keyboard.press('Enter')
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"r_d_isdateequalto2.jpg")
+    utilities.revert(page)
 # test_row_drop_isdateequalto(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_row_drop_isdategreaterthan(signed_in_context):
     conf = g_config()
     page = signed_in_context
     utilities.row_start(page)
     inpf = "//form//div//select[@name='column']"
-    page.locator(inpf).select_option(conf['data']['inputdate'])
+    page.locator(inpf).select_option(conf['data']['row_drop_date'])
     condt = "//form//div//select[@name='condition']"
     page.locator(condt).select_option('IsDateGreaterThan')
     page.screenshot(path=PATHL+date_string+"r_d_isdategreaterthan.jpg")
     val = "//input[@name='customDate']"
-    page.locator(val).fill(conf['data']['date1'])
+    page.locator(val).fill(conf['data']['row_drop_isdategreaterthan'])
     page.keyboard.press('Enter')
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"r_d_isdategreaterthan2.jpg")
+    utilities.revert(page)
 # test_row_drop_isdategreaterthan(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_row_drop_isdategreaterthanorequalto(signed_in_context):
     conf = g_config()
     page = signed_in_context
     utilities.row_start(page)
     inpf = "//form//div//select[@name='column']"
-    page.locator(inpf).select_option(conf['data']['inputdate'])
+    page.locator(inpf).select_option(conf['data']['row_drop_date'])
     condt = "//form//div//select[@name='condition']"
     page.locator(condt).select_option('IsDateGreaterThanOrEqualTo')
     page.screenshot(path=PATHL+date_string+"r_d_isdategreaterthanorequalto.jpg")
     val = "//input[@name='customDate']"
-    page.locator(val).fill(conf['data']['date1'])
+    page.locator(val).fill(conf['data']['row_drop_isdategreaterthan'])
     page.keyboard.press('Enter')
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"r_d_isdategreaterthanorequalto2.jpg")
+    utilities.revert(page)
 # test_row_drop_isgreaterthanorequalto(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_row_drop_isdatelessthan(signed_in_context):
     conf = g_config()
     page = signed_in_context
     utilities.row_start(page)
     inpf = "//form//div//select[@name='column']"
-    page.locator(inpf).select_option(conf['data']['inputdate'])
+    page.locator(inpf).select_option(conf['data']['row_drop_date'])
     condt = "//form//div//select[@name='condition']"
     page.locator(condt).select_option('IsDateLessThan')
     page.screenshot(path=PATHL+date_string+"r_d_isdatelessthan.jpg")
     val = "//input[@name='customDate']"
-    page.locator(val).fill(conf['data']['date1'])
+    page.locator(val).fill(conf['data']['row_drop_isdatelessthan'])
     page.keyboard.press('Enter')
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"r_d_isdatelessthan2.jpg")
+    utilities.revert(page)
 # test_row_drop_isdatelessthan(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_row_drop_isdatelessthanorequalto(signed_in_context):
     conf = g_config()
     page = signed_in_context
     utilities.row_start(page)
     inpf = "//form//div//select[@name='column']"
-    page.locator(inpf).select_option(conf['data']['inputdate'])
+    page.locator(inpf).select_option(conf['data']['row_drop_date'])
     condt = "//form//div//select[@name='condition']"
     page.locator(condt).select_option('IsDateLessThanOrEqualTo')
     page.screenshot(path=PATHL+date_string+"r_d_isdatelessthanorequalto.jpg")
     val = "//input[@name='customDate']"
-    page.locator(val).fill(conf['data']['date1'])
+    page.locator(val).fill(conf['data']['row_drop_isdatelessthan'])
     page.keyboard.press('Enter')
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"r_d_isdatelessthanorequalto2.jpg")
+    utilities.revert(page)
 # test_row_drop_isdatelessthanorequalto(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_row_drop_isdatenotequalto(signed_in_context):
     conf = g_config()
     page = signed_in_context
     utilities.row_start(page)
     inpf = "//form//div//select[@name='column']"
-    page.locator(inpf).select_option(conf['data']['inputdate'])
+    page.locator(inpf).select_option(conf['data']['row_drop_date'])
     condt = "//form//div//select[@name='condition']"
     page.locator(condt).select_option('IsDateNotEqualTo')
     page.screenshot(path=PATHL+date_string+"r_d_isdatenotequalto.jpg")
     val = "//input[@name='customDate']"
-    page.locator(val).fill(conf['data']['date1'])
+    page.locator(val).fill(conf['data']['row_drop_isdatenotequalto'])
     page.keyboard.press('Enter')
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"r_d_isdatenotequalto2.jpg")
+    utilities.revert(page)
 # test_row_drop_isdatenotequalto(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_row_drop_matchregex(signed_in_context):
     conf = g_config()
     page = signed_in_context
     utilities.row_start(page)
     inpf = "//form//div//select[@name='column']"
-    page.locator(inpf).select_option(conf['data']['name'])
+    page.locator(inpf).select_option(conf['data']['column_name2'])
     condt = "//form//div//select[@name='condition']"
     page.locator(condt).select_option('MatchRegex')
     page.screenshot(path=PATHL+date_string+"r_d_matchregex.jpg")
     val = "//input[@name='subString']"
-    page.locator(val).fill(conf['data']['regex'])
+    page.locator(val).fill(conf['data']['row_drop_matchregex'])
     page.keyboard.press('Enter')
     utilities.apply(page)
-    page.screenshot(path=PATHL+date_string+"r_d_matchregex2.jpg")# test_row_drop_matchregex(signed_in_context)
+    page.screenshot(path=PATHL+date_string+"r_d_matchregex2.jpg")
+    utilities.revert(page)# test_row_drop_matchregex(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_row_drop_islessthan(signed_in_context):
     conf = g_config()
     page = signed_in_context
     utilities.row_start(page)
     inpf = "//form//div//select[@name='column']"
-    page.locator(inpf).select_option(conf['data']['score'])
+    page.locator(inpf).select_option(conf['data']['column_name3'])
     condt = "//form//div//select[@name='condition']"
     page.locator(condt).select_option('IsLessThan')
     page.screenshot(path=PATHL+date_string+"r_d_islessthan.jpg")
     val = "//form//div//input[@name='value']"
-    page.locator(val).fill(conf['data']['value1'])
+    page.locator(val).fill(conf['data']['row_drop_islessthan'])
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"r_d_islessthan2.jpg")
+    utilities.revert(page)
 # test_row_drop_islessthan(signed_in_context)
 
 # def test_add_column(signed_in_context):
@@ -755,7 +782,7 @@ def test_row_drop_islessthan(signed_in_context):
 #     ap = page.click(apr)
 #     print("Column added!")
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_add_column_addindexcolumn(signed_in_context):
     conf = g_config()
     page = signed_in_context
@@ -764,13 +791,14 @@ def test_add_column_addindexcolumn(signed_in_context):
     page.locator(add_new).select_option('ADD_INDEX_COLUMN')
     page.screenshot(path=PATHL+date_string+"col_addindexcol.jpg")
     textadd = "//form//div//input[@name='newColumn']"
-    page.locator(textadd).fill(conf['data']['newname'])
+    page.locator(textadd).fill(conf['data']['add_column_addindexcolumn'])
     utilities.add(page)
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"col_addindexcol2.jpg")
+    utilities.revert(page)
 # test_add_column_addindexcolumn(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_add_column_changecolumntype(signed_in_context):
     conf = g_config()
     page = signed_in_context
@@ -780,19 +808,20 @@ def test_add_column_changecolumntype(signed_in_context):
     page.screenshot(path=PATHL+date_string+"col_changecoltype.jpg")
     current_type = "//select[@name='column']"
     page.wait_for_selector(current_type,timeout=240000)
-    page.locator(current_type).select_option(conf['data']['score'])
+    page.locator(current_type).select_option(conf['data']['column_name3'])
     new_data_type = "//select[@name='changeType']"
     page.locator(new_data_type).select_option('DOUBLE')
     create_new_column = "//input[@name='createNewColumn']"
     page.click(create_new_column)
     new_name = "//input[@name='newColumn']"
-    page.locator(new_name).fill(conf['data']['res'])
+    page.locator(new_name).fill(conf['data']['add_column_result_name'])
     utilities.add(page)
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"col_changecoltype2.jpg")
+    utilities.revert(page)
 # test_add_column_changecolumntype(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_add_column_concatwithseparator(signed_in_context):
     conf = g_config()
     page = signed_in_context
@@ -802,20 +831,21 @@ def test_add_column_concatwithseparator(signed_in_context):
     page.screenshot(path=PATHL+date_string+"col_concatwithseparator.jpg")
     inp_field = "//span[@class='multiselect-selected-text']"
     page.click(inp_field)
-    name = "//label[normalize-space()='"+conf['data']['name']+"']"
+    name = "//label[normalize-space()='"+conf['data']['column_name2']+"']"
     page.click(name)
-    score = "//label[normalize-space()='"+conf['data']['score']+"']"
+    score = "//label[normalize-space()='"+conf['data']['column_name3']+"']"
     page.click(score)
     sep = "//input[@name='separator']"
     page.locator(sep).fill('/')
     new_col = "//input[@name='newColumn']"
-    page.locator(new_col).fill(conf['data']['res'])
+    page.locator(new_col).fill(conf['data']['add_column_result_name'])
     utilities.add(page)
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"col_concatwithseparator2.jpg")
+    utilities.revert(page)
 # test_add_column_concatwithseparator(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_add_column_copy(signed_in_context):
     conf = g_config()
     page = signed_in_context
@@ -824,16 +854,17 @@ def test_add_column_copy(signed_in_context):
     page.locator(add_new).select_option('COPY')
     page.screenshot(path=PATHL+date_string+"col_copy.jpg")
     inp = "//select[@name='column']"
-    page.locator(inp).select_option(conf['data']['score'])
+    page.locator(inp).select_option(conf['data']['column_name3'])
     new_col = "//input[@name='newColumn']"
-    page.locator(new_col).fill(conf['data']['res'])
+    page.locator(new_col).fill(conf['data']['add_column_result_name'])
     page.keyboard.press('Enter')
     utilities.add(page)
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"col_copy2.jpg")
+    utilities.revert(page)
 # test_add_column_copy(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_add_column_datedifference(signed_in_context):
     conf = g_config()
     page = signed_in_context
@@ -842,20 +873,21 @@ def test_add_column_datedifference(signed_in_context):
     page.locator(add_new).select_option('DATE_DIFFERENCE')
     page.screenshot(path=PATHL+date_string+"col_datedifference.jpg")
     col1 = "//select[@name='column1']"
-    page.locator(col1).select_option(conf['data']['inputdate'])
+    page.locator(col1).select_option(conf['data']['row_drop_date'])
     col2 = "//select[@name='column2']"
-    page.locator(col2).select_option(conf['data']['inputdate'])
+    page.locator(col2).select_option(conf['data']['row_drop_date'])
     diffunit = "//select[@name='differenceUnit']"
-    page.locator(diffunit).select_option(conf['data']['unit'])
+    page.locator(diffunit).select_option(conf['data']['add_column_datedifference_unit'])
     new_col = "//input[@name='newColumn']"
-    page.locator(new_col).fill(conf['data']['res'])
+    page.locator(new_col).fill(conf['data']['add_column_result_name'])
     page.keyboard.press('Enter')
     utilities.add(page)
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"col_datedifference2.jpg")
+    utilities.revert(page)
 # test_add_column_datedifference(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_add_column_datefrequency(signed_in_context):
     conf = g_config()
     page = signed_in_context
@@ -864,22 +896,23 @@ def test_add_column_datefrequency(signed_in_context):
     page.locator(add_new).select_option('DATE_FREQUENCY')
     page.screenshot(path=PATHL+date_string+"col_datefrequency.jpg")
     inp = "//select[@name='column']"
-    page.locator(inp).select_option(conf['data']['inputdate'])
+    page.locator(inp).select_option(conf['data']['row_drop_date'])
     frequnit = "//select[@name='frequencyUnit']"
-    page.locator(frequnit).select_option(conf['data']['unit'])
+    page.locator(frequnit).select_option(conf['data']['add_column_datefrequency_unit'])
     grp = "//b[@class='caret']"
     page.click(grp)
-    date = "//input[@value='"+conf['data']['date']+"']"
+    date = "//input[@value='"+conf['data']['add_column_datefrequency_date']+"']"
     page.click(date)
     new_col = "//input[@name='newColumn']"
-    page.locator(new_col).fill(conf['data']['res'])
+    page.locator(new_col).fill(conf['data']['add_column_result_name'])
     page.keyboard.press('Enter')
     utilities.add(page)
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"col_datefrequency2.jpg")
+    utilities.revert(page)
 # test_add_column_datefrequency(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_add_column_extractdatefeatures(signed_in_context):
     conf = g_config()
     page = page = signed_in_context
@@ -888,19 +921,20 @@ def test_add_column_extractdatefeatures(signed_in_context):
     page.locator(add_new).select_option('EXTRACT_DATE_FEATURES')
     page.screenshot(path=PATHL+date_string+"col_extractdatefeatures.jpg")
     inp = "//select[@name='column']"
-    page.locator(inp).select_option(conf['data']['inputdate'])
+    page.locator(inp).select_option(conf['data']['row_drop_date'])
     grp = "//b[@class='caret']"
     page.click(grp)
-    day = "//input[@value='"+conf['data']['unit']+"']"
+    day = "//input[@value='"+conf['data']['add_column_extractdatefeatures_unit']+"']"
     page.click(day)
     res = "//input[@name='prefix']"
-    page.locator(res).fill(conf['data']['res'])
+    page.locator(res).fill(conf['data']['add_column_result_name'])
     utilities.add(page)
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"col_extractdatefeatures2.jpg")
+    utilities.revert(page)
 # test_add_column_extractdatefeatures(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_add_column_metricfunction(signed_in_context):
     conf = g_config()
     page = signed_in_context
@@ -909,22 +943,23 @@ def test_add_column_metricfunction(signed_in_context):
     page.locator(add_new).select_option('METRIC_FUNCTION')
     page.screenshot(path=PATHL+date_string+"col_metricfunction.jpg")
     inp = "//select[@name='column']"
-    page.locator(inp).select_option(conf['data']['score'])
+    page.locator(inp).select_option(conf['data']['column_name3'])
     metric = "//select[@name='metricFunctionType']"
     page.locator(metric).select_option('COUNT')
     grp = "//span[normalize-space()='None selected']"
     page.click(grp)
-    date = "//input[@value='"+conf['data']['date']+"']"
+    date = "//input[@value='"+conf['data']['add_column_metricfunction_date']+"']"
     page.click(date)
     new_col = "//input[@name='newColumn']"
-    page.locator(new_col).fill(conf['data']['res'])
+    page.locator(new_col).fill(conf['data']['add_column_result_name'])
     page.keyboard.press('Enter')
     utilities.add(page)
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"col_metricfunction2.jpg")
+    utilities.revert(page)
 # test_add_column_metricfunction(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_add_column_numberbucketing(signed_in_context):
     conf = g_config()
     page = signed_in_context
@@ -933,22 +968,23 @@ def test_add_column_numberbucketing(signed_in_context):
     page.locator(add_new).select_option('NUMBER_BUCKETING')
     page.screenshot(path=PATHL+date_string+"col_numberbucketing.jpg")
     inp = "//select[@name='column']"
-    page.locator(inp).select_option(conf['data']['score'])
+    page.locator(inp).select_option(conf['data']['column_name3'])
     bucket = "//select[@name='bucketType']"
     page.locator(bucket).select_option('AutoBucketing')
     no_of_bucks = "//input[@name='numberOfBuckets']"
-    page.locator(no_of_bucks).fill(conf['data']['value5'])
+    page.locator(no_of_bucks).fill(conf['data']['add_column_numberbucketing'])
     lab_prefix = "//input[@name='labelPrefix']"
-    page.locator(lab_prefix).fill(conf['data']['prefix'])
+    page.locator(lab_prefix).fill(conf['data']['add_column_numberbucketing_prefix'])
     new_col = "//input[@name='newColumn']"
-    page.locator(new_col).fill(conf['data']['res'])
+    page.locator(new_col).fill(conf['data']['add_column_result_name'])
     page.keyboard.press('Enter')
     utilities.add(page)
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"col_numberbucketing2.jpg")
+    utilities.revert(page)
 # test_add_column_numberbucketing(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_add_column_stringcondition(signed_in_context):
     conf = g_config()
     page = signed_in_context
@@ -957,19 +993,20 @@ def test_add_column_stringcondition(signed_in_context):
     page.locator(add_new).select_option('STRING_CONDITION')
     page.screenshot(path=PATHL+date_string+"col_stringcondition.jpg")
     inp = "//select[@name='column']"
-    page.locator(inp).select_option(conf['data']['name'])
+    page.locator(inp).select_option(conf['data']['column_name2'])
     cont = "//select[@name='condition']"
     page.locator(cont).select_option('Contains')
     substring = "//input[@name='subString']"
-    page.locator(substring).fill(conf['data']['substring2'])
+    page.locator(substring).fill(conf['data']['add_column_stringcondition_substring'])
     new_col = "//input[@name='newColumn']"
-    page.locator(new_col).fill(conf['data']['res'])
+    page.locator(new_col).fill(conf['data']['add_column_result_name'])
     utilities.add(page)
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"col_stringcondition2.jpg")
+    utilities.revert(page)
 # test_add_column_stringcondition(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_add_column_stringcountmatches(signed_in_context):
     conf = g_config()
     page = signed_in_context
@@ -978,18 +1015,19 @@ def test_add_column_stringcountmatches(signed_in_context):
     page.locator(add_new).select_option('STRING_COUNT_MATCHES')
     page.screenshot(path=PATHL+date_string+"col_stringcountmatches.jpg")
     inp = "//select[@name='column']"
-    page.locator(inp).select_option(conf['data']['name'])
+    page.locator(inp).select_option(conf['data']['column_name2'])
     subs = "//input[@name='regex']"
-    page.locator(subs).fill(conf['data']['substring2'])
+    page.locator(subs).fill(conf['data']['add_column_stringcountmatches_substring'])
     new_col = "//input[@name='newColumn']"
-    page.locator(new_col).fill(conf['data']['res'])
-    page.keyboard.press('Enter')
+    page.locator(new_col).fill(conf['data']['add_column_result_name'])
+    # page.keyboard.press('Enter')
     utilities.add(page)
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"col_stringcountmatches2.jpg")
+    utilities.revert(page)
 # test_add_column_stringcountmatches(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_add_column_stringlength(signed_in_context):
     conf = g_config()
     page = signed_in_context
@@ -998,16 +1036,17 @@ def test_add_column_stringlength(signed_in_context):
     page.locator(add_new).select_option('STRING_LENGTH')
     page.screenshot(path=PATHL+date_string+"col_stringlength.jpg")
     inp = "//select[@name='column']"
-    page.locator(inp).select_option(conf['data']['name'])
+    page.locator(inp).select_option(conf['data']['column_name2'])
     new_col = "//input[@name='newColumn']"
-    page.locator(new_col).fill(conf['data']['res'])
+    page.locator(new_col).fill(conf['data']['add_column_result_name'])
     page.keyboard.press("Enter")
     utilities.add(page)
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"col_stringlength2.jpg")
+    utilities.revert(page)
 # test_add_column_stringlength(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_add_column_stringsplit(signed_in_context):
     conf = g_config()
     page = signed_in_context
@@ -1016,19 +1055,20 @@ def test_add_column_stringsplit(signed_in_context):
     page.locator(add_new).select_option('STRING_SPLIT')
     page.screenshot(path=PATHL+date_string+"col_stringsplit.jpg")
     inp = "//select[@name='column']"
-    page.locator(inp).select_option(conf['data']['inputdate2'])
+    page.locator(inp).select_option(conf['data']['add_column_stringsplit_inputdate'])
     splittype = "//select[@name='splitType']"
     page.locator(splittype).select_option('splitByText')
     deli = "//input[@name='delimiter']"
-    page.locator(deli).fill(conf['data']['delimeter'])
+    page.locator(deli).fill(conf['data']['add_column_stringsplit_delimeter'])
     prefix = "//input[@name='prefix']"
-    page.locator(prefix).fill(conf['data']['res'])
+    page.locator(prefix).fill(conf['data']['add_column_result_name'])
     utilities.add(page)
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"col_stringsplit2.jpg")
+    utilities.revert(page)
 # test_add_column_stringsplit(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_add_column_substring(signed_in_context):
     conf = g_config()
     page = signed_in_context
@@ -1037,19 +1077,20 @@ def test_add_column_substring(signed_in_context):
     page.locator(add_new).select_option('SUB_STRING')
     page.screenshot(path=PATHL+date_string+"col_substring.jpg")
     inp = "//select[@name='column']"
-    page.locator(inp).select_option(conf['data']['name'])
+    page.locator(inp).select_option(conf['data']['column_name2'])
     substring_type = "//select[@name='SubStringType']"
     page.locator(substring_type).select_option("FIRST_N_CHARACTER")
     len = "//input[@name='length']"
-    page.locator(len).fill(conf['data']['length'])
+    page.locator(len).fill(conf['data']['add_column_substring_length'])
     new_col = "//input[@name='newColumn']"
-    page.locator(new_col).fill(conf['data']['res'])
+    page.locator(new_col).fill(conf['data']['add_column_result_name'])
     utilities.add(page)
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"col_substring2.jpg")
+    utilities.revert(page)
 # test_add_column_substring(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_grouping_data_concatenate(signed_in_context):
     conf = g_config()
     page = signed_in_context
@@ -1057,27 +1098,28 @@ def test_grouping_data_concatenate(signed_in_context):
     page.locator(grp_data).click()
     select = "//span[@class='multiselect-selected-text']"
     page.click(select)
-    date = "//input[@value='"+conf['data']['date']+"']"
+    date = "//input[@value='"+conf['data']['grouping_data_concatenate_date']+"']"
     page.click(date)
     click = "//div[@class='alpaca-array-toolbar alpaca-array-toolbar-position-bottom']"
     page.click(click)
     add_funct = "//button[normalize-space()='Add Function']"
     page.click(add_funct)
     met_funct = "//select[@name='metricFunctions_0']"
-    page.locator(met_funct).select_option('CONCATENATE')
+    page.locator(met_funct).select_option(conf['data']['grouping_data1'])
     page.screenshot(path=PATHL+date_string+"group_data_concat.jpg")
     inp = "//select[@name='column']"
-    page.locator(inp).select_option(conf['data']['name'])
+    page.locator(inp).select_option(conf['data']['column_name2'])
     deli = "//input[@name='delimiter']"
-    page.locator(deli).fill(conf['data']['delimeter2'])
+    page.locator(deli).fill(conf['data']['grouping_data_concatenate_delimeter'])
     new_col = "//input[@name='newColumn']"
-    page.locator(new_col).fill(conf['data']['res'])
+    page.locator(new_col).fill(conf['data']['add_column_result_name'])
     utilities.add(page)
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"group_data_concat2.jpg")
+    utilities.revert(page)
 # test_grouping_data_concatenate(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_grouping_data_mean(signed_in_context):
     conf = g_config()
     page = signed_in_context
@@ -1085,26 +1127,27 @@ def test_grouping_data_mean(signed_in_context):
     page.locator(grp_data).click()
     select = "//span[@class='multiselect-selected-text']"
     page.click(select)
-    score = "//label[normalize-space()='"+conf['data']['score']+"']"
+    score = "//label[normalize-space()='"+conf['data']['column_name3']+"']"
     page.click(score)
     click = "//div[@class='alpaca-array-toolbar alpaca-array-toolbar-position-bottom']"
     page.click(click)
     add_funct = "//button[normalize-space()='Add Function']"
     page.click(add_funct)
     met_funct = "//select[@name='metricFunctions_0']"
-    page.locator(met_funct).select_option('MEAN')
+    page.locator(met_funct).select_option(conf['data']['grouping_data'])
     page.screenshot(path=PATHL+date_string+"group_data_mean.jpg")
     inp = "//select[@name='column']"
-    page.locator(inp).select_option(conf['data']['score'])
+    page.locator(inp).select_option(conf['data']['column_name3'])
     new_col = "//input[@name='newColumn']"
-    page.locator(new_col).fill(conf['data']['res'])
+    page.locator(new_col).fill(conf['data']['add_column_result_name'])
     page.keyboard.press('Enter')
     utilities.add(page)
     utilities.apply(page)
     page.screenshot(path=PATHL+date_string+"group_data_mean2.jpg")
+    utilities.revert(page)
 # test_grouping_data_mean(signed_in_context)
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_show_hide(signed_in_context):
     conf = g_config()
     page = signed_in_context
