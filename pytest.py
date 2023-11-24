@@ -13,6 +13,7 @@ try:
 except Exception as e:
     print(f"Error occurred during logging setup: {e}")
 PATHL=os.getcwd()+"/"
+
 def g_config():
     with open(PATHL+"config.toml", mode="rb") as fp:
         config_file = tomli.load(fp)
