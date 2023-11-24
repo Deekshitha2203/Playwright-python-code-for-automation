@@ -1,29 +1,60 @@
+# Settings used when running the application
+[base]
+url = "https://pre-app.datoin.com/"
+
+[browser]
+headless = false
+
+[user]
+username = 'atharrafiqi+62@datoin.com'
+password = 'Sphi@1234'
+
+[dataset]
+name = "date_feild_test"
+path ="datoin/data/date_feild_test.csv"
+explore = "dataset-a24142c3-9059-426e-b1c8-ccc708f591ef"
+
+
 [data]
-name = "name"
-score = "score"
-marks = 'marks'
+del_column_name1 = "Date"
+column_name2 = "name"
+column_name3 = "score"
+renamed_col_name = 'marks'
 inputstring = 'Illuminex Limited8'
-endswith = '8'
+row_drop_endswith = '8'
 replacedstring = 'replaced'
-substring = 'i'
-value1 = '5'
-value2 = '30'
-value3 = '35'
-value4 = '25'
-value5 = '3'
-value6 = '2'
-inputdate = 'isoFormaWrong'
-date1 = '2000-10-31 01:30:00.000000000'
-date2 = '2000-11-01 01:30:00.000000000'
-regex = 'owl*'
-newname = 'slno'
-res = 'result'
-unit = 'DAY'
-date = 'Date'
-prefix = 'res'
-substring2 = 'Illuminex'
-inputdate2 = 'isoFormatRight'
-delimeter = 'T'
-delimeter2 = '-'
-length = '10'
-mean = 'MEAN'
+row_drop_if_startswith = 'i'
+row_drop_islessthan = '5'
+row_drop_isbetween1 = '5'
+row_drop_isbetween2 = '30'
+row_drop_isequalto = '35'
+row_drop_isnotequalto = '35'
+row_drop_isgreaterthan = '25'
+islessthanorequalto = '25'
+add_column_numberbucketing = '3'
+round_n = '2'
+row_drop_date = 'isoFormaWrong'
+row_drop_isdatebetween1 = '2000-10-31 01:30:00.000000000'
+row_drop_isdatebetween2 = '2000-11-01 01:30:00.000000000'
+row_drop_isdateequalto = '2000-10-31 01:30:00.000000000'
+row_drop_isdategreaterthan = '2000-10-31 01:30:00.000000000'
+row_drop_isdatelessthan = '2000-10-31 01:30:00.000000000'
+row_drop_isdatenotequalto = '2000-10-31 01:30:00.000000000'
+row_drop_matchregex = 'owl*'
+add_column_addindexcolumn = 'slno'
+add_column_result_name= 'result'
+add_column_datedifference_unit = 'DAY'
+add_column_datefrequency_unit = 'DAY'
+add_column_extractdatefeatures_unit = 'DAY'
+add_column_metricfunction_date = 'Date'
+grouping_data_concatenate_date = 'Date'
+add_column_datefrequency_date = 'Date'
+add_column_numberbucketing_prefix = 'res'
+add_column_stringcondition_substring = 'Illuminex'
+add_column_stringcountmatches_substring = 'Illuminex'
+add_column_stringsplit_inputdate = 'isoFormatRight'
+add_column_stringsplit_delimeter = 'T'
+grouping_data_concatenate_delimeter = '-'
+add_column_substring_length = '10'
+grouping_data = 'MEAN'
+grouping_data1 = 'CONCATENATE'
