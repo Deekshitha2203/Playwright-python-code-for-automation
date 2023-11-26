@@ -57,7 +57,7 @@ with sync_playwright() as p:
                     print('Element is not present on the page or did not appear within the timeout.')
         except Exception as e:
             print('Element is not present on the page or did not appear within the timeout.')
-        directory_path = "/Users/deekshitha/PycharmProjects/PlaywrightProject/new_data"
+        directory_path = " " #enter the path to the directory
         column_letter = 'A'
         wb = openpyxl.load_workbook('data1.xlsx',data_only=True)
         sheet = wb['Sheet1']
