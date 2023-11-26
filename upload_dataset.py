@@ -34,7 +34,9 @@ with sync_playwright() as p:
         except Exception as e:
             print('Element is not present on the page or did not appear within the timeout.')
     login(page)
-    def create_dataset(page):
+
+    
+    def upload_dataset(page):
         da = "//div[contains(text(),'Datasets')]"
         page.click(da)
         page.screenshot(path='screen.png')
@@ -111,10 +113,11 @@ with sync_playwright() as p:
                 sheet.cell(row=start_row, column=1, value=newvalue)
                 sheet.cell(row=start_row, column=2, value='uploaded')
                 total_rows += 1
-
         wb.close()
         wb.save('dsheet.xlsx')
-    create_dataset(page)
+    upload_dataset(page)
+
+    
     def create_new_application(page):
         new = "https://pre-app.datoin.com/4ed52767-3689-4951-85c2-0bab8b560222/7ef5d230-8dd0-471a-b180-bc83ef88efd6/apps"
         page.goto(new,wait_until="load")
